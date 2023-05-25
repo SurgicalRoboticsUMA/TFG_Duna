@@ -1,6 +1,24 @@
+#####################################################################################
+#                                                                                   #
+#    Detección de heridas en imágenes RGB-D integrado en un sistema ciberfísico     #
+#    para la asistencia a la sutura laparoscópica.                                  #
+#    Copyright (C) 2023. Duna de Luis Moura.                                        #
+#                                                                                   #
+#    This program is free software: you can redistribute it and/or modify           #
+#    it under the terms of the GNU General Public License as published by           #
+#    the Free Software Foundation, either version 3 of the License, or              #
+#    (at your option) any later version.                                            #
+#                                                                                   #
+#    This program is distributed in the hope that it will be useful,                #
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of                 #
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                  #
+#    GNU General Public License for more details.                                   #
+#                                                                                   #
+#    You should have received a copy of the GNU General Public License              #
+#    along with this program.  If not, see <https://www.gnu.org/licenses/>.         #
+#                                                                                   #    
+#####################################################################################
 ### MAIN ###
-# Author: Duna de Luis Moura
-# Date: 01/2023
 
 # Standard library imports
 import cv2
