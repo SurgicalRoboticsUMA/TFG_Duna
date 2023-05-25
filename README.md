@@ -5,8 +5,10 @@ Autora: Duna de Luis Moura (DNI: 78980830A)
 Tutora: Dra. Isabel García Morales
 Co-tutor: Álvaro Galán Cuenca
 
-## Título: Detección de heridas en imágenes RGB-D integrado en un sistema ciberfísico para la asistencia a la sutura laparoscópica.
-### Palabras clave: cirugía laparoscópica, sutura quirúrgica robotizada, cámara RGB-D, gradiente de profundidad, estimación de puntos de sutura.
+## Título:
+### Detección de heridas en imágenes RGB-D integrado en un sistema ciberfísico para la asistencia a la sutura laparoscópica.
+#### Palabras clave:
+cirugía laparoscópica, sutura quirúrgica robotizada, cámara RGB-D, gradiente de profundidad, estimación de puntos de sutura.
 
 ## Resumen:
 La cirugía laparoscópica robotizada es una técnica quirúrgica avanzada en la que se emplea un sistema robótico para llevar a cabo intervenciones mínimamente invasivas en el abdomen del paciente. Este enfoque combina la laparoscopia, que implica la realización de pequeñas incisiones por las que se introducen instrumentos quirúrgicos miniaturizados, con la tecnología robótica, permitiendo que estos sistemas asistan a los cirujanos en determinadas maniobras quirúrgicas. 
