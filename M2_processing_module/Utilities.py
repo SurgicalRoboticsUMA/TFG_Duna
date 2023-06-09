@@ -69,6 +69,10 @@ class Utilities:
                 
         # Calculate the median of the distances   
         px_scale = np.median(distances) * 100 / 30  
+
+        if px_scale > 0.1:
+            px_scale = px_scale/10
+
         return px_scale
     
     """ Representing the 3D surface """
@@ -127,11 +131,12 @@ class Utilities:
         plt.show()
         
     """ Representing stitches """
-    def print_stitches(self, injury, stitches, title, c, unit):
+    def print_stitches(self, injury, stitches, center, title, c, unit):
         
         plt.imshow(injury, cmap = colors.ListedColormap(['black', 'white']))
         for p in stitches:
             plt.scatter(p[0], p[1], color=c, s=20)
+        plt.scatter(np.round(center[0], 0), np.round(center[1]), color="blue", s=20)
 
         X = 'X' + unit
         Y = 'Y' + unit
@@ -158,6 +163,33 @@ class Utilities:
         plt.xlabel(X, fontdict = {'fontsize' : 25})
         plt.ylabel(Y, fontdict = {'fontsize' : 25})
         plt.title(title, fontdict = {'fontsize' : 30})
+        plt.show()
+
+    """ Representing the trajectory """
+    def grid_trayect(self, final_trayectory):
+        num_triplas = len(final_trayectory)
+
+        x = [fila[0] for fila in final_trayectory]
+        y = [fila[1] for fila in final_trayectory]
+        z = [fila[2] for fila in final_trayectory]
+
+        # Crear la figura y los ejes
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
+
+        # Graficar los puntos
+        ax.scatter3D(x, y, z)
+
+        # Agregar etiquetas a cada punto
+        for i in range(num_triplas):
+            ax.text(x[i], y[i], z[i], str(i + 1))
+
+        # Etiquetas de los ejes
+        ax.set_xlabel('X [m]', labelpad=25)
+        ax.set_ylabel('Y [m]', labelpad=35)
+        ax.set_zlabel('Z [m]', labelpad=35)
+
+        # Mostrar la gráfica
         plt.show()
 
     """ Generating the colorbar for colormaps """
@@ -205,6 +237,18 @@ class Utilities:
                 s = 0
         RX = [[1, 0, 0, 0], [0, c, -s, 0], [0, s, c, 0], [0, 0, 0, 1]]
         return np.array(RX)
+    
+    """ Rotation in Y """
+    def rotY(self, theta):
+        s = np.sin(theta)
+        c = np.cos(theta)
+        if isinstance(theta, (int, float)):
+            if abs(c) < 1e-10:
+                c = 0
+            if abs(s) < 1e-10:
+                s = 0
+        RY = [[c,0,s,0], [0,1,0,0], [-s,0,c,0], [0, 0, 0, 1]]
+        return np.array(RY)
 
     """ Rotation in Z """
     def rotZ(self, theta):

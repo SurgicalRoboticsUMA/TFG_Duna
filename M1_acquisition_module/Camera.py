@@ -40,7 +40,7 @@ class Camera:
 
     """ Detecting death_zones with the manual formula """
     def death_zones(self, distance, width):
-        ratio = 0.18 / (2 * distance *100 * math.tan((84*math.pi)/(2*180)))
+        ratio = 0.18 / (2 * distance * math.tan((84*math.pi)/(2*180)))
         pixels = math.trunc(width * ratio)
         return pixels
 

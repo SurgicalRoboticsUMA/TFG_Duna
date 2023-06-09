@@ -12,8 +12,8 @@ class Wound:
     def binaritation(image):
         # Preprocessing the image
         kernel = np.ones((5,5), np.uint8)
-        injury = cv2.dilate(image, kernel, iterations=7) 
-        injury = cv2.erode(injury, kernel, iterations=7) 
+        injury = cv2.dilate(image, kernel, iterations=10) 
+        injury = cv2.erode(injury, kernel, iterations=10) 
         injury = cv2.dilate(injury, kernel, iterations=1) 
 
         _, binary = cv2.threshold(injury, 0.5, 255, cv2.THRESH_BINARY)
@@ -198,9 +198,9 @@ class Wound:
             Yr.append(i[1])
             Zr.append(i[2])
 
-        Xr = decimate(Xr, 8)
-        Yr = decimate(Yr, 8)
-        Zr = decimate(Zr, 8)
+        Xr = decimate(Xr, 12)
+        Yr = decimate(Yr, 12)
+        Zr = decimate(Zr, 12)
         
         return [Xr, Yr, Zr]
         

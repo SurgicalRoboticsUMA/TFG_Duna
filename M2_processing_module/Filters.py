@@ -9,16 +9,15 @@ import cv2
 class Filters:
 
     """ Reshape the matrix to eliminate depth pixels """
-    def reshape(image, death_px):
+    def reshape(image, death_px, OFFSET):
         reshaped = []
         s = np.shape(image)
         # I add the 100 because of the set up conditions
-        for i in range(death_px+100, s[0]):
-            # To correctly detect tubular wounds I ajust this values to [i][280:s[1]-280]
-            reshaped.append(image[i][280:s[1]-280])
+        for i in image[OFFSET:]:
+            reshaped.append(i[death_px+OFFSET:s[1]-2*OFFSET])
         return reshaped
+        
 
-    
     """ Number of null pixels in the image """
     def null_px(matriz):
         contador = 0
