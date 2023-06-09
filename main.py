@@ -188,10 +188,13 @@ def main():
 
     kmeansclass = kmean(dir)
     mean_curv, gauss_curv = wound.curvature(smooth)
-    wound_curvature =  [np.mean(mean_curv), np.mean(gauss_curv)]
-    label_test = kmeansclass.fit_predict(wound_curvature)
+    wound_curvature =  [np.mean(gauss_curv), np.mean(mean_curv)]
+    data_test, label_test, centroides, labels_train = kmeansclass.fit_predict(wound_curvature)
+
+    kmeansclass.dispersion(data_test, label_test, centroides, labels_train)
 
     print("Herida plana" if label_test==0 else "Herida tubular")
+
 
     ## 4. CALCULATION OF STITCHES ##
     # Straighten up the wound
