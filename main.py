@@ -315,13 +315,13 @@ def main():
         aux.append(float(t[2]))
         final_trayectory.append(aux)
     
-    print("Trayectoria completa respecto de R1")
+    print("Complete trajectory with respect to R1")
     print(final_trayectory)
 
     ros_trayect = []
     for l in final_trayectory:
         ros_trayect.extend(l)
-    """ print("Trayectoria para enviar por ros")
+    """ print("Trayectory to send by ros")
     print(ros_trayect) """
 
     utils.grid_trayect(final_trayectory)
