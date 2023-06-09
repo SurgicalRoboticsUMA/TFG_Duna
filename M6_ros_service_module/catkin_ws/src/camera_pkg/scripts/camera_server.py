@@ -28,7 +28,7 @@ def handle_user_req(req):
     res = UserReqResponse(container["num"], container["stitches"])
     mutex.release()
 
-    print('Mandando')
+    print('Sended!')
     return res
 
 def camera_server():

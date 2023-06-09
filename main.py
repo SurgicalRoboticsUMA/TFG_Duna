@@ -63,6 +63,7 @@ def main():
     # Store the parameters of the image
     w = aligned_frames.get_width()
     h = aligned_frames.get_height()
+    print(f"(W, H) = ({w}, {h})")
     
     utils = M2_processing_module.Utilities()
 
@@ -107,11 +108,13 @@ def main():
 
     # Representing the original image
     utils.grid('Depth image', depth_image, ' [px]')
+    print(len(depth_image))
 
     ## 2. PROCESSING THE IMAGE ##
     # Reshaped the death pixels
     death_px = camera.death_zones(distance, w)
-    reshaped = filter.reshape(depth_image, death_px)
+    OFFSET = 100
+    reshaped = filter.reshape(depth_image, death_px, OFFSET)
     utils.grid('Reshaped image', reshaped, ' [px]')
 
     # Validate the quality of the image
@@ -121,11 +124,11 @@ def main():
    
     # Interpolate the null pixels
     corrected = filter.interpolate(reshaped)
-    utils.grid('Corrected image', corrected, ' [px]')
+    #utils.grid('Corrected image', corrected, ' [px]')
     
     # Invert the matrix
     invert = filter.invert(corrected)
-    utils.grid('Invert image', invert, ' [px]')
+    #utils.grid('Invert image', invert, ' [px]')
     
     # Smooth the image
     smooth = filter.smoothing(invert)
@@ -158,7 +161,7 @@ def main():
 
     # Obtain propertires of the injury
     prop = wound.properties(injury)
-    original_ori = prop[0].orientation
+    phi = prop[0].orientation
 
     # ROI image
     b1, b2, b3, b4 = wound.roi_coor(injury, prop[0])
@@ -168,23 +171,12 @@ def main():
     
     print(f"ROI coordinates: {b1, b2, b3, b4}")
     utils.grid("ROI image", roi_image, ' [px]')
-
-    #Colision mesh
-    [Xr, Yr, Zr] = wound.colision_mesh(roi_image, px_scale)
-    """ n = len(Xr)
-    fig = plt.figure()
-    ax = fig.add_subplot(projection='3d')
-    for k in range(n):
-        ax.scatter(Xr[k], Yr[k], Zr[k], c='b', marker='.')
-    ax.set_xlabel('x')
-    ax.set_ylabel('y')
-    ax.set_zlabel('z')
-    plt.show() """
     
     ### 6. ClASSIFICATION ###
     # Adress of the datatrain for the classiffier
     #dir = "/home/duna/Escritorio/TFG sutura quirurgica/UMA_MallaColisiones/PYTHON/CameraFeature/M5_classifier_module"
-    dir = "/home/labrob2022/Desktop/UMA_MallaColisiones/PYTHON/CameraFeature/M5_classifier_module"
+    #dir = "/home/labrob2022/Desktop/UMA_MallaColisiones/PYTHON/CameraFeature/M5_classifier_module"
+    dir = "/home/labrob2022/Escritorio/CameraFeature/M5_classifier_module"
 
     kmeansclass = kmean(dir)
     mean_curv, gauss_curv = wound.curvature(smooth)
@@ -195,15 +187,13 @@ def main():
 
     print("Herida plana" if label_test==0 else "Herida tubular")
 
-
     ## 4. CALCULATION OF STITCHES ##
     # Straighten up the wound
-    phi = original_ori
     print(f"Wound inclination: {phi} º")
 
     (rows, cols) = injury.shape[:2]
-    center = (cols // 2, rows // 2)
-    T = cv2.getRotationMatrix2D(center, -phi, 1)
+    injury_center = (cols // 2, rows // 2)
+    T = cv2.getRotationMatrix2D(injury_center, -phi, 1)
     v_injury = cv2.warpAffine(injury, T, (cols, rows))
 
     # Main diagonal of the wound
@@ -231,10 +221,14 @@ def main():
     stitches_point = stitch.thin_stitches(separation, major_length, top, bottom)
     print(f"Stitches in main diagonal in px: {stitches_point}")
     
+    img_center = [w/2, h/2]
+    reshape_center = np.shape(smooth)
+    reshape_center = [reshape_center[1]/2, reshape_center[0]/2]
+
     # Represent thin stitches
     v_injury_line = cv2.cvtColor(v_injury, cv2.COLOR_GRAY2RGB)
     cv2.line(v_injury_line, top, bottom, (255, 0, 0), 2)
-    utils.print_stitches(v_injury_line, stitches_point, "Stitches in main diagonal in px", "blue", " [px]")
+    utils.print_stitches(v_injury_line, stitches_point, injury_center, "Stitches in main diagonal in px", "blue", " [px]")
 
     # Calculation of gross stitches
     print(f"injury paramenters: {np.shape(v_injury)}")
@@ -249,22 +243,36 @@ def main():
         print(f"Stitches in suture line in px: {stitches_point}")
 
         # Represent gross stitches
-        utils.print_stitches(v_injury_line, stitches_point, "Gross stitches in suture line", "red", " [px]")
+        utils.print_stitches(v_injury_line, stitches_point, reshape_center, "Gross stitches in suture line", "red", " [px]")
     
     # Unroted the stitches coordinates
-    T_inv = cv2.getRotationMatrix2D(center, phi, 1)
+    T_inv = cv2.getRotationMatrix2D(injury_center, phi, 1)
     rot_stitches = cv2.transform(np.array([stitches_point]), T_inv)[0] 
     print(f"Rotated stitches: {rot_stitches}")
 
     # Representation of stitches well oriented
-    utils.print_stitches(injury, rot_stitches, "Stitches original image", "blue", " [px]")
+    utils.print_stitches(injury, rot_stitches, reshape_center, "Stitches original image", "blue", " [px]")
 
+    ## Calculate the stitches in the original image
+    stitches = []
+    for s in rot_stitches:
+        stitches.append([s[0] + OFFSET, s[1] + death_px + OFFSET])
+    #print(f"Stitches 4 real: {stitches}")
+    
     # Overlap the injury to the RGB image and the stitches
     img1 = color_image.astype(np.float32)
     img1 = cv2.normalize(img1, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8UC1)
-    img1 = filter.reshape(img1, death_px)
+    utils.print_stitches(img1, stitches, img_center, "RGB image with stitches", "red", " [px]")
 
-    utils.print_stitches(img1, rot_stitches, "RGB image with stitches", "red", " [px]")
+    stitches_3D = []
+    for s in stitches:
+        aux = []
+        aux.append(s[0])
+        aux.append(s[1])
+        aux.append(depth_image[s[1]][s[0]]/100)
+        
+        stitches_3D.append(aux)
+    print(stitches_3D)
 
     ## Change of reference system ##
     # Set the print options for homogeneous transformation matrix.
@@ -273,47 +281,67 @@ def main():
     refsys = M4_stitches_module.ReferenceSystem()
 
     # Change to the camera reference system
-    w_cm = w * px_scale
-    h_cm = h * px_scale
-
-    Pcam = refsys.Tim2Tcam(depth_image, rot_stitches, w_cm, h_cm, px_scale)    
+    Pcam = refsys.Tim2Tcam(utils, stitches_3D, img_center, px_scale)
+    print(f"Pcam -> {Pcam}")    
 
     # Change the coordinates of the stitch points to the robot reference system R2.
     # Transformation from one robot to another
-    TR1R2 = refsys.TR1R2(utils)
+    TB1B2 = refsys.TB1B2(utils)
+    #print(f"TB2B1 -> {TB2B1}")
 
-    # Camera support parameters
-    dz = 5.5-0.37
-    dy = 3.6
+    # Camera support parameters (cm)
+    dz = 6-0.37
+    dy = 4.1
 
     # Transform from R2 to camera
-    TR2C = refsys.TR2cam(utils, dy, dz)
+    TB2C = refsys.TB2C(utils, dy, dz)
+    #print(f"TCE2 -> {TCE2}")
 
     # Stitches from the camera to R1
-    PR1 = refsys.Pcam2PR1(utils, Pcam, TR2C, TR1R2)
+    PB1 = refsys.Pcam2B1(Pcam, TB2C, TB1B2)/100 # meters
+    stitches_R1 = refsys.calib(utils, PB1)
     print("Puntos de sutura respecto de R1")
-    print(PR1)
+    print(f"PR1 -> {stitches_R1}") 
 
     # Adding the bias points to the final trayectory
-    eta = 2 # 2 cm away from the surface to stretch the thread
-    trayect = stitch.trayectory(PR1, eta)
+    eta = 0.02 # 2 cm away from the surface to stretch the thread
+    trayect = stitch.trayectory(stitches_R1, eta)
+
+    final_trayectory = []
+    for t in trayect:
+        aux = []
+        aux.append(float(t[0]))
+        aux.append(float(t[1]))
+        aux.append(float(t[2]))
+        final_trayectory.append(aux)
+    
     print("Trayectoria completa respecto de R1")
-    print(trayect)
+    print(final_trayectory)
+
+    ros_trayect = []
+    for l in final_trayectory:
+        ros_trayect.extend(l)
+    """ print("Trayectoria para enviar por ros")
+    print(ros_trayect) """
+
+    utils.grid_trayect(final_trayectory)
+
+    utils.print_stitches(img1, stitches, img_center, "RGB image with stitches", "red", " [px]")
 
     # Quaternions calculation
-    Q = stitch.quaternion(PR1, original_ori)
-    print(f"Quaternios: {Q}")
+    Q = stitch.quaternion(PB1, phi)
+    #print(f"Quaternios: {Q}")
 
     # Store the depth_image in a file
     """ with open('Validación/V1_plana', 'w') as f:
         info = "pr = " + str(depth_image)
         f.write(info)
-    f.close()  """
+    f.close()  """ 
         
 
 if __name__ == "__main__":
-    #try:
-    main()
-    """ except:
+    try:
+        main()
+    except:
         print('An error has ocurred')
-    pass """
+    pass

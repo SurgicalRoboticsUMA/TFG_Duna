@@ -68,7 +68,10 @@ class KmeanClassifier:
         # With the trained classifier we classify the last wound as a test.
         data_test = np.array(data_test).reshape(1, -1)
         label_test = kmeans.predict(data_test)
+        return data_test, label_test, centroides, labels_train
 
+    """ Dispersion graph """
+    def dispersion(self, data_test, label_test, centroides, labels_train):
         for i in range(len(self.data_set_train)):
             if (self.train_labels_binary[i] == 0):
                 plt.scatter(self.data_set_train[i][0], self.data_set_train[i][1], color='blue')
@@ -113,7 +116,6 @@ class KmeanClassifier:
         plt.legend(loc='upper left')
         plt.show()
 
-        return label_test       
       
         
 

@@ -23,4 +23,4 @@ if __name__ == "__main__":
     print("Requesting stitches")
     resp = user_client()
     print(resp)
-    print('hola')
+    print("Finish!")

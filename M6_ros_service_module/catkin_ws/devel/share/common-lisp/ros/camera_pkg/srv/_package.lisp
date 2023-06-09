@@ -1,0 +1,15 @@
+(cl:defpackage camera_pkg-srv
+  (:use )
+  (:export
+   "CAMERADATA"
+   "<CAMERADATA-REQUEST>"
+   "CAMERADATA-REQUEST"
+   "<CAMERADATA-RESPONSE>"
+   "CAMERADATA-RESPONSE"
+   "USERREQ"
+   "<USERREQ-REQUEST>"
+   "USERREQ-REQUEST"
+   "<USERREQ-RESPONSE>"
+   "USERREQ-RESPONSE"
+  ))
+

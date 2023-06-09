@@ -7,10 +7,7 @@ import cv2
 import numpy as np
 from sys import path
 
-#path.insert(0, '/home/duna/Escritorio/TFG sutura quirurgica/UMA_MallaColisiones/PYTHON/CameraFeature')
-
-#path.insert(0, './')
-path.insert(0, '/media/sf_TFG_sutura_quirurgica/UMA_MallaColisiones/PYTHON/CameraFeature')
+path.insert(0, '/home/labrob2022/Escritorio/CameraFeature')
 #print(path)
 
 # Local imports

@@ -1,0 +1,2 @@
+camera_pkg
+-DCATKIN_DEVEL_PREFIX=/home/labrob2022/Escritorio/CameraFeature/M6_ros_service_module/catkin_ws/devel -DCMAKE_INSTALL_PREFIX=/home/labrob2022/Escritorio/CameraFeature/M6_ros_service_module/catkin_ws/install -G Unix Makefiles

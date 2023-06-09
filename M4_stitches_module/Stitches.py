@@ -75,8 +75,8 @@ class Stitches:
             i = round(coor_stitches[pto][0], 0)
             j = round(coor_stitches[pto][1], 0)
             found = False
-            lim = len(injury)
-            while (not found) and i < lim:
+            lim = np.shape(injury)
+            while (not found) and i < lim[1]:
                 try:
                     suture_line.index([[i, j]])
                     gross_stitches.append([i, j])
@@ -87,10 +87,10 @@ class Stitches:
     
     """ Adding the bias points to the trayectory """
     def trayectory(self, stitches, eta):
-        trayectory = []  
-        for i in range(len(stitches)-1):
-            bias = np.zeros(3)
+        trayectory = []
+        for i in range(0, len(stitches)-1):
             trayectory.append(stitches[i])
+            bias = np.zeros(3)
             bias[0] = (stitches[i][0] + stitches[i+1][0])/2
             bias[1] = (stitches[i][1] + stitches[i+1][1])/2
             bias[2] = (stitches[i][2] + stitches[i+1][2])/2 + eta
