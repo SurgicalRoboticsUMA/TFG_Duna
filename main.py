@@ -91,7 +91,7 @@ def main():
     #plt.axis('off')
     plt.xlabel('X [px]', fontdict = {'fontsize' : 25})
     plt.ylabel('Y [px]', fontdict = {'fontsize' : 25})
-    #plt.title("Depth colormap", fontdict = {'fontsize' : 30})
+    plt.title("Depth colormap", fontdict = {'fontsize' : 30})
 
     # Legend color bar
     c = utils.gradient_colorbar()
@@ -108,7 +108,7 @@ def main():
 
     # Representing the original image
     utils.grid('Depth image', depth_image, ' [px]')
-    print(len(depth_image))
+    #print(len(depth_image))
 
     ## 2. PROCESSING THE IMAGE ##
     # Reshaped the death pixels
@@ -231,8 +231,8 @@ def main():
     utils.print_stitches(v_injury_line, stitches_point, injury_center, "Stitches in main diagonal in px", "blue", " [px]")
 
     # Calculation of gross stitches
-    print(f"injury paramenters: {np.shape(v_injury)}")
-    print(f"injury centroid: {prop[0].centroid}")
+    #print(f"injury paramenters: {np.shape(v_injury)}")
+    #print(f"injury centroid: {prop[0].centroid}")
     if not thin:
         if label_test == 0: # flat wound
             suture_dist = 0.5
@@ -257,7 +257,6 @@ def main():
     stitches = []
     for s in rot_stitches:
         stitches.append([s[0] + OFFSET, s[1] + death_px + OFFSET])
-    #print(f"Stitches 4 real: {stitches}")
     
     # Overlap the injury to the RGB image and the stitches
     img1 = color_image.astype(np.float32)
@@ -272,7 +271,7 @@ def main():
         aux.append(depth_image[s[1]][s[0]]/100)
         
         stitches_3D.append(aux)
-    print(stitches_3D)
+    #print(stitches_3D)
 
     ## Change of reference system ##
     # Set the print options for homogeneous transformation matrix.
