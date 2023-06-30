@@ -40,6 +40,9 @@ import M4_stitches_module.Stitches
 import M4_stitches_module.ReferenceSystem 
 import M5_classifier_module.KmeanClassifier as kmean
 
+# CHAGE THIS ADDRESS!!
+dir = "/home/duna/Escritorio/CameraFeature/TFG_Duna/M5_classifier_module"
+
 print("Environment Ready")
 
 def main():
@@ -173,11 +176,6 @@ def main():
     utils.grid("ROI image", roi_image, ' [px]')
     
     ### 6. ClASSIFICATION ###
-    # Adress of the datatrain for the classiffier
-    #dir = "/home/duna/Escritorio/TFG sutura quirurgica/UMA_MallaColisiones/PYTHON/CameraFeature/M5_classifier_module"
-    #dir = "/home/labrob2022/Desktop/UMA_MallaColisiones/PYTHON/CameraFeature/M5_classifier_module"
-    dir = "/home/labrob2022/Escritorio/CameraFeature/M5_classifier_module"
-
     kmeansclass = kmean(dir)
     mean_curv, gauss_curv = wound.curvature(smooth)
     wound_curvature =  [np.mean(gauss_curv), np.mean(mean_curv)]
@@ -339,8 +337,8 @@ def main():
         
 
 if __name__ == "__main__":
-    try:
-        main()
-    except:
+    #try:
+    main()
+    """ except:
         print('An error has ocurred')
-    pass
+    pass """
